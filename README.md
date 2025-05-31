@@ -1,12 +1,42 @@
-# React + Vite
+#  Gestor de Citas Médicas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este proyecto es una aplicación web para gestionar citas médicas, desarrollada con **React** para el frontend, **Node.js + Express** para el backend y **MongoDB** como base de datos.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Funcionalidades principales
 
-## Expanding the ESLint configuration
+- Crear, editar y eliminar citas médicas.
+- Visualización en tarjetas de citas existentes.
+- Búsqueda de citas por nombre del paciente.
+- Gestión de especialidades y doctores desde una sección de configuración.
+- Interfaz amigable con modales para formularios.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ⚙ Tecnologías utilizadas
+
+### Frontend
+- React
+- Vite
+- Tailwind CSS
+
+### Backend
+- Node.js
+- Express
+- MongoDB (Mongoose)
+
+### Herramientas adicionales
+- Vercel (deploy del frontend)
+- Render (deploy del backend)
+- MongoDB Atlas (base de datos en la nube)
+
+---
+
+##  ¿Cómo ejecutar el proyecto?
+
+Ingresa a https://gestor-citas-medicas.vercel.app
+
+La conexion puede tardar almenos un minuto mientras conecta el backend a la base de datos. 
+
+Desarrollado por Samuel Gutierrez.
