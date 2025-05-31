@@ -10,6 +10,7 @@ function App() {
   const [citas, setCitas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [citaSeleccionada, setCitaSeleccionada] = useState(null);
+  const [filtroPaciente, setFiltroPaciente] = useState('');
 
   const obtenerCitas = async () => {
     try {
@@ -42,7 +43,6 @@ function App() {
       console.error('Error de red al agregar cita:', error);
     }
   };
-
 
   const eliminarCita = async (id) => {
     try {
@@ -81,7 +81,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 relative">
-      <SettingsMenu /> { }
+      <SettingsMenu />
 
       <h1 className="text-3xl font-bold text-center mb-6 text-blue-700">
         Gestor de Citas Médicas
@@ -96,7 +96,23 @@ function App() {
         </button>
       </div>
 
-      <CitaList citas={citas} onEliminar={eliminarCita} onEditar={editarCita} />
+      <div className="flex justify-center mb-4">
+        <input
+          type="text"
+          value={filtroPaciente}
+          onChange={(e) => setFiltroPaciente(e.target.value)}
+          placeholder="Buscar por nombre de paciente"
+          className="border px-4 py-2 rounded w-full max-w-md"
+        />
+      </div>
+
+      <CitaList
+        citas={citas.filter(cita =>
+          cita.paciente.toLowerCase().includes(filtroPaciente.toLowerCase())
+        )}
+        onEliminar={eliminarCita}
+        onEditar={editarCita}
+      />
 
       {mostrarModal && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur bg-opacity-50 z-50">
