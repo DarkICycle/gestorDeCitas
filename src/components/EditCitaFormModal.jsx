@@ -13,6 +13,7 @@ function EditCitaFormModal({ cita, onUpdate, onClose }) {
     motivo: '',
   });
 
+  
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_API_URL}/especialidades`)
       .then((res) => setEspecialidades(res.data))
