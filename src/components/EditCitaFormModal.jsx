@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function EditCitaFormModal({ cita, onUpdate, onClose }) {
+  const [especialidades, setEspecialidades] = useState([]);
+  const [doctores, setDoctores] = useState([]);
+
   const [formData, setFormData] = useState({
     paciente: '',
     fecha: '',
@@ -9,14 +13,34 @@ function EditCitaFormModal({ cita, onUpdate, onClose }) {
     motivo: '',
   });
 
-  // Llenar el formulario al recibir la cita
+  useEffect(() => {
+    axios.get(`${import.meta.env.VITE_API_URL}/especialidades`)
+      .then((res) => setEspecialidades(res.data))
+      .catch((err) => console.error('Error al cargar especialidades', err));
+  }, []);
+
+  useEffect(() => {
+    if (formData.especialidad) {
+      axios.get(`${import.meta.env.VITE_API_URL}/doctores`)
+        .then((res) => {
+          const filtrados = res.data.filter(
+            (doc) => doc.especialidad._id === formData.especialidad
+          );
+          setDoctores(filtrados);
+        })
+        .catch((err) => console.error('Error al cargar doctores', err));
+    } else {
+      setDoctores([]);
+    }
+  }, [formData.especialidad]);
+
   useEffect(() => {
     if (cita) {
       setFormData({
         paciente: cita.paciente || '',
         fecha: cita.fecha ? formatearFechaLocal(cita.fecha) : '',
-        especialidad: cita.especialidad || '',
-        doctor: cita.doctor || '',
+        especialidad: typeof cita.especialidad === 'object' ? cita.especialidad._id : cita.especialidad || '',
+        doctor: typeof cita.doctor === 'object' ? cita.doctor._id : cita.doctor || '',
         motivo: cita.motivo || '',
       });
     }
@@ -29,16 +53,15 @@ function EditCitaFormModal({ cita, onUpdate, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onUpdate({ ...cita, ...formData }); 
+    onUpdate({ ...cita, ...formData });
   };
 
   const formatearFechaLocal = (fechaISO) => {
     const fecha = new Date(fechaISO);
-    const offset = fecha.getTimezoneOffset(); 
+    const offset = fecha.getTimezoneOffset();
     const fechaLocal = new Date(fecha.getTime() - offset * 60 * 1000);
     return fechaLocal.toISOString().slice(0, 16);
   };
-  
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,25 +86,31 @@ function EditCitaFormModal({ cita, onUpdate, onClose }) {
         required
       />
 
-      <input
-        type="text"
+      <select
         name="especialidad"
         value={formData.especialidad}
         onChange={handleChange}
-        placeholder="Especialidad"
         className="w-full border px-4 py-2 rounded"
         required
-      />
+      >
+        <option value="">Selecciona una especialidad</option>
+        {especialidades.map((esp) => (
+          <option key={esp._id} value={esp._id}>{esp.nombre}</option>
+        ))}
+      </select>
 
-      <input
-        type="text"
+      <select
         name="doctor"
         value={formData.doctor}
         onChange={handleChange}
-        placeholder="Doctor"
         className="w-full border px-4 py-2 rounded"
         required
-      />
+      >
+        <option value="">Selecciona un doctor</option>
+        {doctores.map((doc) => (
+          <option key={doc._id} value={doc._id}>{doc.nombre}</option>
+        ))}
+      </select>
 
       <textarea
         name="motivo"
@@ -95,13 +124,13 @@ function EditCitaFormModal({ cita, onUpdate, onClose }) {
       <div className="flex justify-end space-x-4">
         <button
           type="button"
-          onClick={onClose} 
+          onClick={onClose}
           className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
         >
           Cancelar
         </button>
         <button
-          type="submit" 
+          type="submit"
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
         >
           Actualizar
